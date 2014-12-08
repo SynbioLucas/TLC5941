@@ -1,19 +1,29 @@
 #include <stdio.h>
 #include <wiringPi.h>
 
-// wiringPi pin 1 is the hardware PWM pin
-//#define wpPin 1
-#define wpPin 7
-#define wpPin2 1
+#define GSCLK 7 // All pins are based on their wiringPi indices
+#define XLAT 11
+#define BLANK 1
+#define SIN 12
+#define SCLK 14
+#define TLC5941_NUM 3
 
 int main(void) {
-	printf("Starting up GSCLK...\n");
-	wiringPiSetup();
-	pinMode(wpPin, GPIO_CLOCK);
-	//pwmWrite(wpPin, 128);
-	gpioClockSet(wpPin, 1200000);
-	pinMode(wpPin2, PWM_OUTPUT);
-	pwmSetRange(4096);
-	pwmWrite(wpPin2, 1);
-	return 0;
+        for (;;) {
+
+        }
+
+        return 0;
+}
+
+void TLC5941_Init(void) {
+        // Start up wiringPi module; prepare to set pins
+        wiringPiSetup();
+        // Start GSCLK using the internal RPi clock (pin 7 special function)
+        pinMode(GSCLK, GPIO_CLOCK);
+        gpioClockSet(GSCLK, 2400000);
+        // Start BLANK clock/PWM  (pin 1  hardware PWM special function)
+        pinMode(BLANK, PWM_OUTPUT);
+        pwmSetRange(1024);
+        pwmWrite(BLANK, 1);
 }
