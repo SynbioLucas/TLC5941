@@ -28,7 +28,7 @@
 			digitalWrite(pin, LOW); \
 			} while (0)
 
-uint8_t gsData[192 * TLC5941_N] = {
+unsigned int gsData[192 * TLC5941_N] = {
 	//MSB				LSB
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 15
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 14
@@ -47,6 +47,9 @@ uint8_t gsData[192 * TLC5941_N] = {
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 1
 	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,	// Channel 0
 }
+
+void TLC5941_Init(void);
+void TLC5941_SetGS_And_GS_PWM(void);
 
 int main(void) {
         TLC5941_Init();
@@ -87,8 +90,8 @@ void TLC5941_Init(void) {
 }
 
 void TLC5941_SetGS_And_GS_PWM(void) {
-	uint16_t = GSCLK_Coutner = 0;
-	uint8_t = Data_Counter = 0;
+	unsigned int = GSCLK_Coutner = 0;
+	unsigned int = Data_Counter = 0;
 	
 	digitalWrite(BLANK, LOW);
 	
