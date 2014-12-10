@@ -46,7 +46,7 @@ unsigned int gsData[192 * TLC5941_N] = {
 	0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 2
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 1
 	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,	// Channel 0
-}
+};
 
 void TLC5941_Init(void);
 void TLC5941_SetGS_And_GS_PWM(void);
@@ -90,8 +90,8 @@ void TLC5941_Init(void) {
 }
 
 void TLC5941_SetGS_And_GS_PWM(void) {
-	unsigned int = GSCLK_Coutner = 0;
-	unsigned int = Data_Counter = 0;
+	unsigned int GSCLK_Counter = 0;
+	unsigned int Data_Counter = 0;
 	
 	digitalWrite(BLANK, LOW);
 	
