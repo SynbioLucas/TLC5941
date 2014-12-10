@@ -114,7 +114,7 @@ void TLC5941_Init(void) {
         // Start BLANK clock/PWM  (pin 1  hardware PWM special function)
 	pwmSetRange(1024);
 	pwmWrite(BLANK, 1);
-	wiringPiISR(BLANK, INT_EDGE_SETUP, &TLC5941_SetGS_And_GS_PWM);
+	wiringPiISR(BLANK, INT_EDGE_RISING, &TLC5941_SetGS_And_GS_PWM);
 }
 
 void TLC5941_SetGS_And_GS_PWM(void) {
