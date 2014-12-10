@@ -34,6 +34,22 @@
 
 unsigned int gsData[192 * TLC5941_N] = {
 	//MSB				LSB
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 47
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 46
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 45
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 44
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 43
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 42
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 41
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 40
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 39
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 38
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 37
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 36
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 35
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 34
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 33
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 32
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 31
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 30
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// Channel 29
@@ -74,7 +90,6 @@ void TLC5941_SetGS_And_GS_PWM(void);
 int main(void) {
         TLC5941_Init();
 	for (;;) {
-		TLC5941_SetGS_And_GS_PWM();
         }
         return 0;
 }
@@ -99,31 +114,30 @@ void TLC5941_Init(void) {
         // Start BLANK clock/PWM  (pin 1  hardware PWM special function)
 	pwmSetRange(1024);
 	pwmWrite(BLANK, 1);
+	wiringPiISR(BLANK, INT_EDGE_SETUP, &TLC5941_SetGS_And_GS_PWM);
 }
 
 void TLC5941_SetGS_And_GS_PWM(void) {
-	unsigned int GSCLK_Counter = 0;
 	unsigned int Data_Counter = 0;
+	static unsigned int xlatNeedsPulse = 0;
 	
-	digitalWrite(BLANK, LOW);
+	if (xlatNeedsPulse) {
+		pulse(XLAT);
+		xlatNeedsPulse = 0;
+	}
 	
 	for (;;) {
-		if (GSCLK_Counter > 4095) {
-			digitalWrite(BLANK, HIGH);
-			pulse(XLAT);
-			break;
-		} else {
-			if (!(Data_Counter > TLC5941_N * 192 - 1)) {
-				if (gsData[Data_Counter]) {
-					digitalWrite(SIN, HIGH);
-				} else {
-					digitalWrite(SIN, LOW);
-				}
-				pulse(SCLK);
-				Data_Counter += 1;
+		if (!(Data_Counter > TLC5941_N * 192 - 1)) {
+			if (gsData[Data_Counter]) {
+				digitalWrite(SIN, HIGH);
+			} else {
+				digitalWrite(SIN, LOW);
 			}
+			pulse(SCLK);
+			Data_Counter += 1;
+		} else {
+			xlatNeedsPulse = 1;
+			break;
 		}
-		pulse(GSCLK);
-		GSCLK_Counter += 1;
 	}
 }
